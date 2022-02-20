@@ -215,4 +215,4 @@ n_epochs = 50,loss_func = loss_func,n_epoch_print=10)
 # 50/50          1.052           1.011           0.278
 ```
 
-Now `train_info` contains three keys; `train_loss'`, `'val_loss'` and `'val_score`  which are arrays containing training-loss, validation-loss and validtaion-score respectively. If no validation-function is parsed, the[multi-class F1-score](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html) is used.
+Now `train_info` contains three keys; `train_loss'`, `'val_loss'` and `'val_score`  which are arrays containing training-loss, validation-loss and validtaion-score respectively. If no validation-function is parsed, the [multi-class F1-score](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html) is used.
