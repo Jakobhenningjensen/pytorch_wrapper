@@ -145,7 +145,7 @@ def create_data_loader(X,y,batch_size):
 Now we have our model and data-loader we can simply train our network by the following
 
 ```python
-from torch_wrapper import NeuralNetwork #Load the module needed
+from pytorch_wrapper.classes.network import NeuralNetwork #Load the module needed
 from model import Net #Load our neural network
 from create_data_loader import create_data_loader #Our function for creating a `DataLoader` object
 
