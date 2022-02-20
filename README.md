@@ -142,7 +142,7 @@ def create_data_loader(X,y,batch_size):
 
 ## Train the network
 
-Now we have our model and data-loader we can simply train our network by the followin
+Now we have our model and data-loader we can simply train our network by the following
 
 ```python
 from torch_wrapper import NeuralNetwork #Load the module needed
@@ -170,16 +170,49 @@ train_info = net.train(train_dataloader=train_data,n_epochs = 50,loss_func = los
 # 50/50          0.880
 ```
 
-`train_info` is a dictionary containing different data depending on the way the network is trained - since we have trained the network without any validation set (see below on how to do that) it just contains `train_loss` which is a numpy-array containing the loss for each batch i.e 250 (`n_samples`/`batch_size` = 1000/20)
+`train_info` is a dictionary containing different data depending on the way the network is trained - since we have trained the network without any validation set (see below on how to do that) it just contains `train_loss` which is an array containing the loss for each batch i.e 250 elements (`n_samples`/`batch_size` = 1000/20)
 
 ## Train the network with a validation-set
 Above is a way to train the network using a full dataset. Often we want to have a validation-set aswell.
-This is very to easy; we just need to create a validation-data-loader and parse that as the argument `val_dataloader`.
-
-For keeping things nice and simply just use the `create_data_loader` function we wrote for both the training and validatio
+This is very to easy; we just need to create a validation-data-loader and parse that as the argument `val_dataloader` in the `net`.
+For keeping things nice and simply we just use the `create_data_loader` function we wrote for both the training and validation
 
 ```python
+from NN_utils.classes.network import NeuralNetwork #Load the module needed
+from network_simple import Net #Load our neural network
+from create_data_loader import create_data_loader #Our function for creating a `DataLoader` object
+import torch
 
 
+#Create a dataset
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+
+X, y = make_classification(n_features=10, n_classes=3, n_informative = 10,n_redundant=0,random_state=42)
+X_train,X_val,y_train,y_val = train_test_split(X,y,test_size=0.2,random_state=42) #split data in train/validation
+
+
+net = NeuralNetwork(Net(3,10)) #Create our net
+
+train_data = create_data_loader(X_train,y_train,batch_size=20) #create training data-loader
+val_data = create_data_loader(X_val,y_val,batch_size=20) #create validation data-loader
+
+loss_func = torch.nn.CrossEntropyLoss() #Define loss-function
+
+train_info = net.train(train_dataloader=train_data,
+val_dataloader=val_data, #adding a validation-set
+n_epochs = 50,loss_func = loss_func,n_epoch_print=10)
+
+
+# No device specified - defaulting to cpu
+# Training with validation data
+# Epoch       Train-loss       Val-loss         Val-score
+# --------------------------------------------------------
+# 10/50          1.117           1.048           0.245
+# 20/50          0.989           1.048           0.239
+# 30/50          0.866           1.005           0.285
+# 40/50          0.907           1.003           0.319
+# 50/50          1.052           1.011           0.278
 ```
 
+Now `train_info` contains three keys; `train_loss'`, `'val_loss'` and `'val_score`  which are arrays containing training-loss, validation-loss and validtaion-score respectively. If no validation-function is parsed, the[multi-class F1-score](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html) is used.
